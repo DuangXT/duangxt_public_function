@@ -3,8 +3,9 @@
 /** 截取浮点数的小数点位数，默认8位 */
 function formatDoubleVal($double_val,$point_size=8){
     $double_val=doubleval($double_val);
-    if(!$point_size) $point_size=8;
-    else $point_size=intval($point_size);
+    $point_size=intval($point_size);
+    if(!$point_size || $point_size<=0 ) $point_size=8;
+    var_dump($point_size);
     if(!strpos($double_val,".")) return $double_val;
     $double_val=explode('.',$double_val);
     $double_val[1]= substr($double_val[1],0,$point_size);
