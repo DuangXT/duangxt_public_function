@@ -11,3 +11,13 @@ function formatDoubleVal($double_val,$point_size=8){
     $double_val[1]= substr($double_val[1],0,$point_size);
     return doubleval($double_val[0].".".$double_val[1]);
 }
+
+/** 获取小数点后的位数 */ //网络流传方法
+function getFloatLength($double_val) {
+    $count=0;$num=doubleval($double_val);
+    $temp=explode('.',$double_val);
+    if (sizeof($temp)>1){
+        $decimal = end($temp);
+        $count = strlen($decimal);}
+    return $count;
+}
