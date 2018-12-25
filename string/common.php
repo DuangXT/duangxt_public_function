@@ -1,3 +1,10 @@
+<?php
+
+/** 将字符串内重复的空格替换成一个空格 */
+function clear_str_space($str=''){
+    return trim(preg_replace("/[\s]+/is"," ",$str));
+}
+
 /** 生成无符号的随机字符串 */
 function generate_code( $length = 5 ) {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
