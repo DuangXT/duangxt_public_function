@@ -1,7 +1,6 @@
 <?php
 
-function Post($url, $post = null)
-{
+function Post($url, $post = null){
     $context = array();
     if (is_array($post))
     {
@@ -54,3 +53,38 @@ function curl_post($url,$data,$header=null){
     return $result;
 }
 
+/**
+ * 判断http 地址是否有效
+ * @param $url
+ * @return bool
+ * @author china_skag
+ * @source https://blog.csdn.net/china_skag/article/details/6745825
+ */
+function url_exists($url){
+    return url_exists1($url);
+}
+/** 判断http 地址是否有效 */
+function url_exists1($url){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_NOBODY, 1); // 不下载
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    return (curl_exec($ch)!==false) ? true : false;
+}
+/** 判断http 地址是否有效 */
+function url_exists2($url){
+    $head = @get_headers($url);
+    return is_array($head) ?  true : false;
+}
+
+/**
+ * 图片链接是否存在
+ * @param $url
+ * @return bool
+ * @author china_skag
+ * @source https://blog.csdn.net/china_skag/article/details/6745825
+ */
+function img_exists($img_url){
+    return file_get_contents($img_url,0,null,0,1) ? true : false;
+}
