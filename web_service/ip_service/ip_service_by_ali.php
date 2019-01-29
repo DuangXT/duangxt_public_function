@@ -18,19 +18,3 @@ function ipv4_info_by_taobao($ip_v4){
     return $response['data'];
 
 }
-
-function Post($url, $post = null)
-{
-    $context = array();
-    if (is_array($post))
-    {
-        ksort($post);
-        $context['http'] = array
-        (
-            'timeout'=>60,
-            'method' => 'POST',
-            'content' => http_build_query($post, '', '&'),
-        );
-    }
-    return file_get_contents($url, false, stream_context_create($context));
-}
