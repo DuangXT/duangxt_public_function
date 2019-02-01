@@ -9,5 +9,5 @@
 function getMicrotime(){
     $time = explode(' ', microtime());
     $time[0] = str_replace("0.","",doubleval($time[0]));
-    return doubleval($time[1] .".". $time[0]);
+    return $time[1] .".". $time[0];
 }
