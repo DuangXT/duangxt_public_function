@@ -2,12 +2,10 @@
 
 function Post($url, $post = null){
     $context = array();
-    if (is_array($post))
-    {
+    if (is_array($post)) {
         ksort($post);
-        $context['http'] = array
-        (
-            'timeout'=>60,
+        $context['http'] = array(
+            'timeout' => 60,
             'method' => 'POST',
             'content' => http_build_query($post, '', '&'),
         );
@@ -23,19 +21,18 @@ function Post($url, $post = null){
  * @param null $header
  * @return mixed
  */
-function curl_post($url,$data,$header=null){
+function curl_post($url, $data, $header = null){
     $ch = curl_init();
     $header[] = "Accept-Charset: utf-8";
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    if(strpos($url,'https') != false){
+    if (strpos($url, 'https') != false) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//https
         $opt[CURLOPT_SSL_VERIFYHOST] = 1;
         $opt[CURLOPT_SSL_VERIFYPEER] = FALSE;
     }
-    if($header){
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    }
+    if ($header) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
     curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
@@ -63,19 +60,21 @@ function curl_post($url,$data,$header=null){
 function url_exists($url){
     return url_exists1($url);
 }
+
 /** 判断http 地址是否有效 */
 function url_exists1($url){
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_NOBODY, 1); // 不下载
     curl_setopt($ch, CURLOPT_FAILONERROR, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    return (curl_exec($ch)!==false) ? true : false;
+    return (curl_exec($ch) !== false) ? true : false;
 }
+
 /** 判断http 地址是否有效 */
 function url_exists2($url){
     $head = @get_headers($url);
-    return is_array($head) ?  true : false;
+    return is_array($head) ? true : false;
 }
 
 /**
@@ -86,7 +85,7 @@ function url_exists2($url){
  * @source https://blog.csdn.net/china_skag/article/details/6745825
  */
 function img_exists($img_url){
-    return file_get_contents($img_url,0,null,0,1) ? true : false;
+    return file_get_contents($img_url, 0, null, 0, 1) ? true : false;
 }
 
 /**
@@ -96,16 +95,14 @@ function img_exists($img_url){
  * @author china_skag
  * @source https://blog.csdn.net/china_skag/article/details/6745825
  */
-function page_exists($url)
-{
+function page_exists($url){
     $parts = parse_url($url);
-    if (!$parts) {
-        return false; /* the URL was seriously wrong */
-    }
 
-    if (isset($parts['user'])) {
-        return false; /* user@gmail.com */
-    }
+    /* the URL was seriously wrong */
+    if (!$parts) return false;
+
+    /* user@gmail.com */
+    if (isset($parts['user'])) return false;
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -113,7 +110,7 @@ function page_exists($url)
     /* set the user agent - might help, doesn't hurt */
     //curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)');
     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; wowTreebot/1.0; +http://wowtree.com)');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
     /* try to follow redirects */
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -129,7 +126,7 @@ function page_exists($url)
 
     /* handle HTTPS links */
     if ($parts['scheme'] == 'https') {
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,  1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
@@ -139,8 +136,7 @@ function page_exists($url)
     /* allow content-type list */
     $content_type = false;
     if (preg_match('/Content-Type: (.+\/.+?)/i', $response, $matches)) {
-        switch ($matches[1])
-        {
+        switch ($matches[1]) {
             case 'application/atom+xml':
             case 'application/rdf+xml':
                 //case 'application/x-sh':
@@ -154,21 +150,17 @@ function page_exists($url)
                 break;
         }
 
-        if (!$content_type && (preg_match('/text\/.*/', $matches[1]) || preg_match('/image\/.*/', $matches[1]))) {
+        if (!$content_type && (preg_match('/text\/.*/', $matches[1])
+                || preg_match('/image\/.*/', $matches[1])))
             $content_type = true;
-        }
     }
 
-    if (!$content_type) {
-        return false;
-    }
+    if (!$content_type) return false;
 
     /*  get the status code from HTTP headers */
-    if (preg_match('/HTTP\/1\.\d+\s+(\d+)/', $response, $matches)) {
+    if (preg_match('/HTTP\/1\.\d+\s+(\d+)/', $response, $matches))
         $code = intval($matches[1]);
-    } else {
-        return false;
-    }
+    else return false;
 
     /* see if code indicates success */
     return (($code >= 200) && ($code < 400));
@@ -176,12 +168,11 @@ function page_exists($url)
 
 /**
  * 检查网址格式
- * @author china_skag
- * @source https://blog.csdn.net/china_skag/article/details/6745825
  * @param $weburl
  * @return bool
+ * @author china_skag
+ * @source https://blog.csdn.net/china_skag/article/details/6745825
  */
-function checkUrl($weburl)
-{
+function checkUrl($weburl) {
     return !ereg("^http(s)*://[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*$", $weburl);
 }
